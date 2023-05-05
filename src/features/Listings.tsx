@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { StartUpCardProps } from "./Landing/Card/StartupCard";
+import StartUpCard, { StartUpCardProps } from "./Landing/Card/StartupCard";
 import SearchBar from "./Listings/SearchBar";
-import StartUpGridView from "./Listings/GridView";
 import { useDisclosure } from "@mantine/hooks";
 import HeuristicFilter from "./Listings/HeuristicFilter";
 import useHeuristicFilterOptionsStore from "@/stores/useHeuristicFilterOptionsStore";
 import axios from "axios";
+import { Container } from "@mantine/core";
 
 const Listings = () => {
   const [loading, setLoading] = useState(false);
@@ -40,7 +40,20 @@ const Listings = () => {
         setSearchQuery={setSearchQuery}
         openFilter={openHeuristicFilterModalOpen}
       />
-      <StartUpGridView items={startUpData} />
+      <Container size={"xl"}>
+        <div className="my-4 flex flex-wrap justify-center gap-4">
+          {startUpData.map((item) => (
+            <StartUpCard
+              id={item.id}
+              key={item.id}
+              name={item.name}
+              imgUrl={item.imgUrl}
+              categories={item.categories}
+              description={item.description}
+            />
+          ))}
+        </div>
+      </Container>
       <HeuristicFilter
         opened={isHeuristicFilterModalOpen}
         open={openHeuristicFilterModalOpen}

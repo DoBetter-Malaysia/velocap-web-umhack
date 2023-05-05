@@ -4,7 +4,10 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <Container className="sticky bottom-0 -z-10 h-[250px] bg-white py-6">
+    <Container
+      size="lg"
+      className="sticky bottom-0 -z-10 h-[250px] bg-white py-6"
+    >
       <div className="grid grid-cols-2">
         <div>
           <img
@@ -20,14 +23,11 @@ const Footer = () => {
           </Text>
         </div>
         <div className="mt-4 flex justify-between gap-4">
-          <div>
+          {/* <div>
             <Text fw={"bold"} fz={"lg"}>
               About
             </Text>
             <div className="text-gray-500">
-              <Text fz={"sm"}>Lorem, ipsum.</Text>
-              <Text fz={"sm"}>Lorem, ipsum.</Text>
-              <Text fz={"sm"}>Lorem, ipsum.</Text>
               <Text fz={"sm"}>Lorem, ipsum.</Text>
               <Text fz={"sm"}>Lorem, ipsum.</Text>
             </div>
@@ -39,9 +39,6 @@ const Footer = () => {
             <div className="text-gray-500">
               <Text fz={"sm"}>Lorem, ipsum.</Text>
               <Text fz={"sm"}>Lorem, ipsum.</Text>
-              <Text fz={"sm"}>Lorem, ipsum.</Text>
-              <Text fz={"sm"}>Lorem, ipsum.</Text>
-              <Text fz={"sm"}>Lorem, ipsum.</Text>
             </div>
           </div>
           <div>
@@ -51,11 +48,8 @@ const Footer = () => {
             <div className="text-gray-500">
               <Text fz={"sm"}>Lorem, ipsum.</Text>
               <Text fz={"sm"}>Lorem, ipsum.</Text>
-              <Text fz={"sm"}>Lorem, ipsum.</Text>
-              <Text fz={"sm"}>Lorem, ipsum.</Text>
-              <Text fz={"sm"}>Lorem, ipsum.</Text>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </Container>

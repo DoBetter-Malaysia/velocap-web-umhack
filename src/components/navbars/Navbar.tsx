@@ -4,7 +4,7 @@ import Logo from "../branding/Logo";
 import { useEffect, useState } from "react";
 
 const Navbar = () => {
-  const [atTopOfPage, setAtTopOfPage] = useState<boolean>(false);
+  const [atTopOfPage, setAtTopOfPage] = useState<boolean>(true);
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -31,15 +31,9 @@ const Navbar = () => {
       <nav className="flex max-w-6xl flex-1 flex-row items-center justify-between">
         <Link href="/">
           <div className="flex items-center">
-            <Logo size={96} />
+            <Logo size={atTopOfPage ? 96 : 64} />
           </div>
         </Link>
-        <div className="space-x-4">
-          <Button variant="subtle" className="text-lg">
-            Sign in
-          </Button>
-          <Button className="text-lg">Register</Button>
-        </div>
       </nav>
     </div>
   );
