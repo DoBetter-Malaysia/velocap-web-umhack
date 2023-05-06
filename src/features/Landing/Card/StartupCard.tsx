@@ -30,8 +30,8 @@ const StartUpCard = ({
         <Image src={imgUrl ?? "/logo.png"} height={160} alt="Random Image" />
       </Card.Section>
       <Group position="left" mt="md" mb="xs" spacing="xs">
-        {categories.map((cat) => (
-          <Badge color="blue" variant="light">
+        {categories.map((cat, key) => (
+          <Badge color="blue" variant="light" key={key}>
             {cat}
           </Badge>
         ))}

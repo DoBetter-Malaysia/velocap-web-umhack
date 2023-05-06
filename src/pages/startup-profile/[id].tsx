@@ -1,5 +1,6 @@
 import { StartUpCardProps } from "@/features/Landing/Card/StartupCard";
 import {
+  Accordion,
   ActionIcon,
   Badge,
   Container,
@@ -13,7 +14,12 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { IconPinned, IconPinnedOff } from "@tabler/icons-react";
 import Link from "next/link";
-import { Startup } from "@/interfaces/Startup";
+import { Startup } from "@/interfaces/startup";
+import MarketGrade from "@/features/Grading/MarketGrade";
+import FounderGrade from "@/features/Grading/FounderGrade";
+import CompanyProfileGrade from "@/features/Grading/CompanyProfileGrade";
+import CompanyCredibility from "@/features/Grading/CompanyCredibility";
+import CompanyFinanceGrade from "@/features/Grading/CompanyFinanceGrade";
 
 export enum StartUpGrade {
   APlus,
@@ -153,8 +159,8 @@ const StartUpProfile = () => {
                 Categories
               </Text>
               <Group position="left" mt="md" mb="xs" spacing="xs">
-                {startUpProfile?.category_list.split("|").map((cat) => (
-                  <Badge color="blue" variant="light">
+                {startUpProfile?.category_list.split("|").map((cat, key) => (
+                  <Badge color="blue" variant="light" key={key}>
                     {cat}
                   </Badge>
                 ))}
@@ -177,7 +183,7 @@ const StartUpProfile = () => {
         <div className="flex flex-col gap-4">
           <div className="rounded-md bg-white p-4 shadow">
             <Text fz="lg" fw="bold">
-              Heuristics Summary
+              Metrics Summary
             </Text>
             <Divider my="sm" />
             <div className="pointer-events-none flex select-none justify-center">
@@ -186,34 +192,27 @@ const StartUpProfile = () => {
           </div>
           <div className="rounded-md bg-white p-4 shadow">
             <Text fz="lg" fw="bold">
-              Report Card
+              Velo Card
             </Text>
             <Divider my="sm" />
             <div className="pointer-events-none flex select-none justify-center">
               {getStartUpGrade(StartUpGrade.A)}
             </div>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Aspect</th>
-                  <th>Grade</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Founder</td>
-                  <td>B</td>
-                </tr>
-                <tr>
-                  <td>Market Capitalisation</td>
-                  <td>B+</td>
-                </tr>
-                <tr>
-                  <td>Competitors Landscape</td>
-                  <td>A</td>
-                </tr>
-              </tbody>
-            </Table>
+            <div className="border-b-solid mb-2 mt-4 flex flex-row border-b-2 border-b-gray-100 px-5 pb-2">
+              <div className="flex-[2] text-start text-lg">Aspect</div>
+              <div className="flex-1 text-end text-lg">Analysis</div>
+            </div>
+            <Accordion multiple>
+              <MarketGrade
+                domain={startUpProfile?.market ?? ""}
+                country={startUpProfile?.country_code ?? ""}
+              />
+              <FounderGrade founders={startUpProfile?.founders ?? []} />
+
+              <CompanyProfileGrade />
+              <CompanyCredibility />
+              <CompanyFinanceGrade />
+            </Accordion>
           </div>
           <div className="rounded-md bg-white p-4 shadow">
             <Text fz="lg" fw="bold">
@@ -230,8 +229,8 @@ const StartUpProfile = () => {
                 </tr>
               </thead>
               <tbody>
-                {startUpProfile?.founders.map((f) => (
-                  <tr>
+                {startUpProfile?.founders.map((f, key) => (
+                  <tr key={key}>
                     <td>
                       <img
                         className="h-[25px] w-[25px] rounded-full"
