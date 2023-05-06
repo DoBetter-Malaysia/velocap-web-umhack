@@ -1,7 +1,32 @@
 import Button from "@/components/buttons/Button";
-import useHeuristicFilterOptionsStore from "@/stores/useHeuristicFilterOptionsStore";
-import { Header, Modal, Text } from "@mantine/core";
-import React from "react";
+import useHeuristicFilterOptionsStore, {
+  HeuristicFilterOptions,
+} from "@/stores/useHeuristicFilterOptionsStore";
+import {
+  ActionIcon,
+  Avatar,
+  Divider,
+  Grid,
+  Group,
+  Header,
+  Modal,
+  NumberInput,
+  RangeSlider,
+  Select,
+  SelectItem,
+  Text,
+} from "@mantine/core";
+import {
+  IconTrendingUp,
+  IconSeeding,
+  IconCrown,
+  IconX,
+} from "@tabler/icons-react";
+import React, { forwardRef, useEffect, useState } from "react";
+import PresetDropdownItem from "./PresetDropdownItem";
+import { useForm } from "@mantine/form";
+import { DateInput } from "@mantine/dates";
+import { useSetState } from "@mantine/hooks";
 
 interface HeuristicFilterProps {
   opened: boolean;
@@ -9,25 +34,227 @@ interface HeuristicFilterProps {
   close: () => void;
 }
 
-const HeuristicFilter = ({ opened, open, close }: HeuristicFilterProps) => {
-  const { getOption, setOption } = useHeuristicFilterOptionsStore();
+const presets: SelectItem[] = [
+  {
+    label: "Fastest Growing",
+    value: "Fastest Growing",
+    content: "Show the fastest growing startups now.",
+    preset: {},
+    icon: (
+      <Avatar color="grape">
+        <IconTrendingUp />
+      </Avatar>
+    ),
+  },
+  {
+    label: "Early Potential",
+    value: "Early Potential",
+    content: "Show the young startups with the most potential.",
+    preset: {},
+    icon: (
+      <Avatar color="green">
+        <IconSeeding />
+      </Avatar>
+    ),
+  },
+  {
+    label: "Seasoned Founders",
+    value: "Seasoned Founders",
+    content: "Show the startups helmed by strong founders.",
+    preset: {},
+    icon: (
+      <Avatar color="yellow">
+        <IconCrown />
+      </Avatar>
+    ),
+  },
+];
 
-  function handleOptionsSave(e: React.MouseEvent<HTMLButtonElement>) {
+const HeuristicFilter = ({ opened, open, close }: HeuristicFilterProps) => {
+  const { getOption, setOption, setOptions } = useHeuristicFilterOptionsStore();
+
+  const heuristicFilterForm = useForm({
+    validate: {
+      companyFoundedMinYear: (value: number) => {
+        if (value === null) return null;
+
+        return value < new Date().getFullYear() - 5
+          ? "Company cannot be older than 5 years old."
+          : null;
+      },
+      companyFoundedMaxYear: (value: number) => {
+        if (value === null) return null;
+
+        return value > new Date().getFullYear()
+          ? "Company cannot founded after this year."
+          : null;
+      },
+    },
+  });
+
+  function updateHeuristicFilters(e: HeuristicFilterOptions) {
     setOption("initialized", true);
+    console.log(e);
+
+    setOptions(e);
+
     close();
   }
 
-  return (
-    <Modal opened={opened} onClose={close} title="Heuristic Filters" size="lg">
-      <div className="flex flex-col gap-2">
-        <Text fz="sm">
-          What are your heuristics in ranking successful startups?
-        </Text>
+  function onFormCancel() {
+    heuristicFilterForm.reset();
+    close();
+  }
 
-        <div className="flex justify-end">
-          <Button onClick={handleOptionsSave}>Save</Button>
+  function onClearFilters(): void {
+    onFormCancel();
+  }
+
+  return (
+    <Modal opened={opened} onClose={close} withCloseButton={false} size="lg">
+      <Grid align="center">
+        <Grid.Col span={4}>
+          <Text fz="xl">Ranking Metrics</Text>
+        </Grid.Col>
+        <Grid.Col span={7}>
+          <Select
+            placeholder="Presets..."
+            itemComponent={PresetDropdownItem}
+            data={presets}
+          />
+        </Grid.Col>
+        <Grid.Col span={1}>
+          <ActionIcon onClick={() => onFormCancel()}>
+            <IconX />
+          </ActionIcon>
+        </Grid.Col>
+      </Grid>
+      <Divider my="sm" />
+      {(() => {
+        if (getOption("initialized")) return;
+
+        return (
+          <div className="mb-4 flex flex-col gap-4">
+            <Text fz="lg" fw="bold">
+              Welcome to VeloCap!
+            </Text>
+            <Text>
+              Please take a few moments of your time to provide us your metrics
+              for your preferred startup by filling up the optional fields below
+              so that we can better serve your ideals.
+            </Text>
+            <Text>
+              Do note that all the fields below are optional which means that we
+              will not take that metric into account if it is empty when finding
+              your dream startup.
+            </Text>
+          </div>
+        );
+      })()}
+      <form
+        className="flex flex-col gap-2"
+        onSubmit={heuristicFilterForm.onSubmit(updateHeuristicFilters)}
+        onReset={() => onFormCancel()}
+      >
+        <div className="flex min-h-[16rem] flex-col gap-4">
+          <div>
+            <Text fz="lg" fw="bold">
+              Company Profile
+            </Text>
+            <Group grow className="items-start">
+              <NumberInput
+                {...heuristicFilterForm.getInputProps("companyFoundedMinYear")}
+                placeholder="Minimum year"
+                label="Minimum year founded"
+              />
+              <NumberInput
+                {...heuristicFilterForm.getInputProps("companyFoundedMaxYear")}
+                placeholder="Maximum year"
+                label="Maximum year founded"
+              />
+            </Group>
+          </div>
+          <NumberInput
+            {...heuristicFilterForm.getInputProps("numberOfFounders")}
+            min={1}
+            placeholder="Number of founders"
+            label="Number of founders"
+          />
+          <DateInput
+            {...heuristicFilterForm.getInputProps("lastEngagement")}
+            label="Last engagement"
+            placeholder="Last Engagement"
+            maxDate={new Date()}
+          />
+          <div>
+            <Text fz="lg" fw="bold">
+              Finances
+            </Text>
+            <NumberInput
+              {...heuristicFilterForm.getInputProps("fundingRounds")}
+              min={1}
+              placeholder="Funding rounds"
+              label="Number of founders"
+            />
+            <NumberInput
+              {...heuristicFilterForm.getInputProps("fundingTotal")}
+              min={1}
+              placeholder="Funding total"
+              label="Funding total"
+              parser={(value) => value.replace(/RM\s?|(,*)/g, "")}
+              formatter={(value) =>
+                !Number.isNaN(parseFloat(value))
+                  ? `RM ${value}`.replace(
+                      /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
+                      ","
+                    )
+                  : "RM "
+              }
+            />
+          </div>
+          <div>
+            <Text fz="lg" fw="bold">
+              Founder Profile
+            </Text>
+            <NumberInput
+              {...heuristicFilterForm.getInputProps("founderYearsOfExperience")}
+              min={1}
+              placeholder="Years of experience"
+              label="Years of experience"
+            />
+            <Select
+              label="Gender"
+              placeholder="Pick one"
+              data={[
+                { value: "male", label: "Male" },
+                { value: "female", label: "Female" },
+              ]}
+              {...heuristicFilterForm.getInputProps("founderGender")}
+            />
+            <NumberInput
+              {...heuristicFilterForm.getInputProps("noOfPreviousStartups")}
+              min={1}
+              placeholder="No. of previous startups"
+              label="No. of previous startups"
+            />
+          </div>
         </div>
-      </div>
+        <div className="my-2 flex justify-end gap-2">
+          <Button
+            onClick={onClearFilters}
+            color="gray"
+            className="px-6 py-2 text-lg"
+          >
+            Clear Filters
+          </Button>
+          <Button type="reset" color="red" className="px-6 py-2 text-lg">
+            Cancel
+          </Button>
+          <Button type="submit" className="px-6 py-2 text-lg">
+            Save
+          </Button>
+        </div>
+      </form>
     </Modal>
   );
 };

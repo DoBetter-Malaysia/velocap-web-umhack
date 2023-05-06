@@ -1,12 +1,14 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-type HeuristicFilterOptions = { [key: string]: any };
+export type HeuristicFilterOptions = { [key: string]: any };
 
 export interface HeuristicFilterOptionsStore {
   heuristicFilterOptions: HeuristicFilterOptions;
   getOption: (key: string) => any;
   setOption: (key: string, value: any) => void;
+  setOptions: (options: Partial<HeuristicFilterOptions>) => void;
+  getOptions: () => HeuristicFilterOptions;
 }
 
 const useHeuristicFilterOptionsStore = create<HeuristicFilterOptionsStore>()(
@@ -21,6 +23,10 @@ const useHeuristicFilterOptionsStore = create<HeuristicFilterOptionsStore>()(
         cur[key] = value;
         set({ heuristicFilterOptions: cur });
       },
+      setOptions: (options: Partial<HeuristicFilterOptions>) => {
+        set({ ...get().heuristicFilterOptions, ...options });
+      },
+      getOptions: () => get().heuristicFilterOptions,
     }),
     { name: "heuristic-filter-options" }
   )
