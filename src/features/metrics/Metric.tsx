@@ -7,8 +7,8 @@ import { useMemo } from "react";
 import useGetMetrics from "./useGetMetrics";
 
 export const defaultSettings = {
-  companyFoundedMinYear: new Date().getFullYear() - 2,
-  companyFoundedMaxYear: new Date().getFullYear() + 4,
+  companyFoundedMinYear: new Date().getFullYear() - 3,
+  companyFoundedMaxYear: new Date().getFullYear(),
   numberOfFounders: 3,
   lastEngagement: new Date(new Date().setDate(new Date().getDate() - 150)),
   companyStatus: "operating",

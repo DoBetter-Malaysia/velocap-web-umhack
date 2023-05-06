@@ -82,8 +82,8 @@ const HeuristicFilter = ({ close }: HeuristicFilterProps) => {
       companyFoundedMinYear: (value: number) => {
         if (!value) return null;
 
-        return value < new Date().getFullYear() - 5
-          ? "Company cannot be older than 5 years old."
+        return value < new Date().getFullYear() - 20
+          ? "Company cannot be older than 20 years old."
           : null;
       },
       companyFoundedMaxYear: (value: number) => {
