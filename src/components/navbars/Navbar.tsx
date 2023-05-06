@@ -24,14 +24,14 @@ const Navbar = () => {
 
   return (
     <div
-      className={`sticky left-0 right-0 top-0 z-20 flex flex-row justify-center bg-white transition-shadow ${
-        atTopOfPage ? "" : "shadow-md"
+      className={`sticky left-0 right-0 top-0 z-20 flex flex-row justify-center bg-white transition-[height_width_box-shadow] ${
+        atTopOfPage ? "h-[6rem]" : "h-[5rem] shadow-md"
       }`}
     >
-      <nav className="flex max-w-6xl flex-1 flex-row items-center justify-between">
-        <Link href="/">
-          <div className="flex items-center">
-            <Logo size={atTopOfPage ? 96 : 64} />
+      <nav className="flex h-full max-w-6xl flex-1 flex-row items-center justify-between">
+        <Link className="h-full" href="/">
+          <div className="flex h-full  items-center">
+            <Logo />
           </div>
         </Link>
       </nav>
