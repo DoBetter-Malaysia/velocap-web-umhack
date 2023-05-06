@@ -1,4 +1,4 @@
-import { Founder } from "./Founder";
+import { Founder } from "./founder";
 
 export interface Startup {
   angel: number;

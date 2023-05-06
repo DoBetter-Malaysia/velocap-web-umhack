@@ -22,6 +22,7 @@
     "@types/react-dom": "18.2.1",
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
+    "bing-chat": "^0.2.3",
     "eslint": "8.39.0",
     "eslint-config-next": "13.3.4",
     "next": "13.3.4",
