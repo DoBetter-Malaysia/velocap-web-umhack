@@ -12,7 +12,8 @@ const Listings = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [startUpData, setStartUpData] = useState<StartUpCardProps[]>([]);
 
-  const { getOption, setOption } = useHeuristicFilterOptionsStore();
+  const { heuristicFilterOptions, getOption, setOption } =
+    useHeuristicFilterOptionsStore();
   const [
     isHeuristicFilterModalOpen,
     {
@@ -22,16 +23,17 @@ const Listings = () => {
   ] = useDisclosure(!getOption("initialized") ?? true);
 
   useEffect(() => {
-    console.log(searchQuery);
-  }, [searchQuery]);
-
-  useEffect(() => {
     setLoading(true);
-    axios("http://127.0.0.1:5000/startups").then((res) => {
-      setStartUpData(res.data);
-      setLoading(false);
-    });
-  }, []);
+    axios
+      .post("http://127.0.0.1:5000/startups", {
+        ...heuristicFilterOptions,
+        searchQuery,
+      })
+      .then((res) => {
+        setStartUpData(res.data);
+        setLoading(false);
+      });
+  }, [heuristicFilterOptions, searchQuery]);
 
   return (
     <>

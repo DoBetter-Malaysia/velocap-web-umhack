@@ -23,7 +23,7 @@ const useHeuristicFilterOptionsStore = create<HeuristicFilterOptionsStore>()(
         set({ heuristicFilterOptions: cur });
       },
       setOptions: (options: Partial<HeuristicFilterOptions>) => {
-        set({ heuristicFilterOptions: {...get().heuristicFilterOptions, ...options} });
+        set({ heuristicFilterOptions: options });
       },
     }),
     { name: "heuristic-filter-options" }
