@@ -11,7 +11,7 @@ import {
 import axios from "axios";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { IconPinned, IconPinnedOff } from "@tabler/icons-react";
+import { IconPinned, IconPinnedOff, IconHeart } from "@tabler/icons-react";
 
 export interface FounderProfile {
   id: string;
@@ -54,9 +54,11 @@ const FounderProfile = () => {
             <Text fz="lg" fw="bold">
               Founder Profile
             </Text>
-            <ActionIcon onClick={toggleProfilePin}>
-              {isProfilePinned ? <IconPinnedOff /> : <IconPinned />}
-            </ActionIcon>
+            <div>
+              <ActionIcon onClick={toggleProfilePin}>
+                {isProfilePinned ? <IconPinnedOff /> : <IconPinned />}
+              </ActionIcon>
+            </div>
           </div>
           <Divider my="sm" />
           <div className=" flex flex-col gap-4">

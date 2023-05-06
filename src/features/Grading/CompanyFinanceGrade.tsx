@@ -1,14 +1,21 @@
 import Grade from "./Grade";
+import { MetricType } from "../metrics/useGetMetrics";
 
-interface CompanyFinanceGradeProps {}
+interface CompanyFinanceGradeProps {
+  metrics: MetricType;
+}
 
-const CompanyFinanceGrade = () => {
+const CompanyFinanceGrade = ({ metrics }: CompanyFinanceGradeProps) => {
+  const explanation =
+    metrics[2].status && metrics[3].status
+      ? "The company has received a lot of funds and has a healthy financial status"
+      : "The company has not receive much funds yet";
   return (
     <Grade
-      explanation="Good"
+      explanation={explanation}
       loading={false}
       title="Company Finance"
-      grade={true}
+      grade={metrics[2].status && metrics[3].status}
     />
   );
 };

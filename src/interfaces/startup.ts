@@ -39,4 +39,5 @@ export interface Startup {
   status: string
   undisclosed: number
   venture: number
+  last_engagement_at: string
 }
