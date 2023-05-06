@@ -76,7 +76,13 @@ const HeuristicFilter = ({ close }: HeuristicFilterProps) => {
 
   const heuristicFilterForm = useForm({
     initialValues: heuristicFilterOptions.initialized
-      ? heuristicFilterOptions
+      ? {
+          ...heuristicFilterOptions,
+          lastEngagement:
+            heuristicFilterOptions.lastEngagement instanceof Date
+              ? heuristicFilterOptions.lastEngagement
+              : new Date(heuristicFilterOptions.lastEngagement),
+        }
       : defaultSettings,
     validate: {
       companyFoundedMinYear: (value: number) => {
