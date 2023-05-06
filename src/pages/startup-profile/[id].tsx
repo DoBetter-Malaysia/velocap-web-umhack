@@ -27,6 +27,7 @@ import CompanyCredibility from "@/features/Grading/CompanyCredibility";
 import CompanyFinanceGrade from "@/features/Grading/CompanyFinanceGrade";
 import StartupProfileSection from "@/features/StartupProfile/StartupProfileSection";
 import NewsArticle from "@/features/StartupProfile/NewsArticle";
+import NewsSection from "@/features/StartupProfile/NewsSection";
 
 export enum StartUpGrade {
   APlus,
@@ -132,34 +133,32 @@ const StartUpProfile = () => {
 
   return (
     <>
-      <div className="sticky top-[0.5rem] z-20 mt-[-5rem]">
-        <Accordion className="mx-auto w-1/2 rounded-md bg-white">
-          <Accordion.Item value="nav">
-            <Accordion.Control icon={<IconMenu2 />}>
-              Table of Contents
-            </Accordion.Control>
-            <Accordion.Panel>
-              <List>
-                {navItems.map((nav) => (
-                  <List.Item key={nav.href}>
-                    <div className="flex items-center gap-4">
-                      <nav.icon size="16px" />
-                      <Link className="text-blue-500" href={nav.href}>
-                        {nav.label}
-                      </Link>
-                    </div>
-                  </List.Item>
-                ))}
-              </List>
-            </Accordion.Panel>
-          </Accordion.Item>
-        </Accordion>
-      </div>
+      <Accordion className="sticky top-[0.5rem] z-20 mx-auto mt-[-5rem] w-1/2 rounded-md bg-white">
+        <Accordion.Item value="nav">
+          <Accordion.Control icon={<IconMenu2 />}>
+            Table of Contents
+          </Accordion.Control>
+          <Accordion.Panel>
+            <List>
+              {navItems.map((nav) => (
+                <List.Item key={nav.href}>
+                  <div className="flex items-center gap-4">
+                    <nav.icon size="16px" />
+                    <Link className="text-blue-500" href={nav.href}>
+                      {nav.label}
+                    </Link>
+                  </div>
+                </List.Item>
+              ))}
+            </List>
+          </Accordion.Panel>
+        </Accordion.Item>
+      </Accordion>
       <Container size="lg" py="2rem">
         <div className="grid grid-cols-[0.61803398875fr_1fr] gap-4 ">
           <StartupProfileSection startUpProfile={startUpProfile} />
           <div className="flex flex-col gap-4">
-            {/* <div id="metrics" className="rounded-md bg-white p-4 shadow">
+            <div id="metrics" className="rounded-md bg-white p-4 shadow">
               <div className="flex items-center gap-2">
                 <IconRulerMeasure />
                 <Text fz="lg" fw="bold">
@@ -235,19 +234,8 @@ const StartUpProfile = () => {
                   ))}
                 </tbody>
               </Table>
-            </div> */}
-            <div id="news" className="rounded-md bg-white p-4 shadow">
-              <div className="flex items-center gap-2">
-                <IconNews />
-                <Text fz="lg" fw="bold">
-                  News Section
-                </Text>
-              </div>
-              <Divider my="sm" />
-              <div className="flex gap-4">
-                <NewsArticle startUpProfile={startUpProfile} />
-              </div>
             </div>
+            <NewsSection startUpProfile={startUpProfile} />
           </div>
         </div>
       </Container>
