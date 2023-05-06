@@ -92,7 +92,7 @@ const getStartUpGrade = (grade: StartUpGrade) => {
 
 const checkGrade = (arr: MetricType, marketProspect?: boolean | null) => {
   let res = 0;
-  if (!arr.length) {
+  if (arr.length < 5) {
     return StartUpGrade.Loading;
   }
   if (arr[4].status && arr[5].status) {
@@ -104,7 +104,7 @@ const checkGrade = (arr: MetricType, marketProspect?: boolean | null) => {
   if (arr[2].status && arr[3].status) {
     res += 2;
   }
-  if (marketProspect == undefined) {
+  if (marketProspect == undefined || marketProspect == null) {
     return StartUpGrade.Loading;
   }
   if (marketProspect) {
@@ -130,7 +130,7 @@ const StartUpProfile = () => {
   const [startUpProfile, setStartUpProfile] = useState<Startup>();
   const router = useRouter();
   const { id } = router.query;
-  const [pros, setPros] = useState(false);
+  const [pros, setPros] = useState<undefined | boolean>(undefined);
   const [isProfilePinned, setIsProfilePinned] = useState<boolean>(false);
 
   useEffect(() => {
@@ -142,9 +142,6 @@ const StartUpProfile = () => {
       setLoading(false);
     });
   }, [router.isReady]);
-  function toggleProfilePin(e: React.MouseEvent<HTMLButtonElement>) {
-    setIsProfilePinned(!isProfilePinned);
-  }
 
   const metrics = useGetMetrics({ profile: startUpProfile });
   const grade = checkGrade(metrics, pros);
@@ -194,8 +191,8 @@ const StartUpProfile = () => {
                 </Text>
               </div>
               <Divider my="sm" />
-              <div className="pointer-events-none flex select-none justify-center">
-                <Metric profile={profile} />
+              <div className="flex justify-center">
+                <Metric profile={startUpProfile} />
               </div>
             </div>
             <div id="velocard" className="rounded-md bg-white p-4 shadow">
@@ -206,8 +203,12 @@ const StartUpProfile = () => {
                 </Text>
               </div>
               <Divider my="sm" />
-              <div className="pointer-events-none flex select-none justify-center">
-                {getStartUpGrade(StartUpGrade.D)}
+              <div className=" flex justify-center">
+                {grade == StartUpGrade.Loading ? (
+                  <Loader />
+                ) : (
+                  getStartUpGrade(grade)
+                )}
               </div>
               <div className="border-b-solid mb-2 mt-4 flex flex-row border-b-2 border-b-gray-100 px-5 pb-2">
                 <div className="flex-[2] text-start text-lg">Aspect</div>
@@ -219,13 +220,19 @@ const StartUpProfile = () => {
                   country={startUpProfile?.country_code ?? ""}
                   setter={setPros}
                 />
-                <FounderGrade metrics={metrics} />
-                <CompanyProfileGrade metrics={metrics} />
-                <CompanyCredibility
-                  metrics={metrics}
-                  profile={startUpProfile}
-                />
-                <CompanyFinanceGrade metrics={metrics} />
+                {metrics.length >= 5 ? (
+                  <>
+                    <FounderGrade metrics={metrics} />
+                    <CompanyProfileGrade metrics={metrics} />
+                    <CompanyCredibility
+                      metrics={metrics}
+                      profile={startUpProfile}
+                    />
+                    <CompanyFinanceGrade metrics={metrics} />
+                  </>
+                ) : (
+                  <Loader />
+                )}
               </Accordion>
             </div>
             <div id="founders" className="rounded-md bg-white p-4 shadow">
@@ -268,17 +275,16 @@ const StartUpProfile = () => {
               </Table>
             </div>
             <NewsSection startUpProfile={startUpProfile} />
-          </div>
-          <div className="rounded-md bg-white p-4 shadow">
-            <Text fz="lg" fw="bold">
-              Recommendations
-            </Text>
-            <Divider my="sm" />
-            <div className="flex justify-center">
-              <Recommendations id={id} />
+            <div className="rounded-md bg-white p-4 shadow">
+              <Text fz="lg" fw="bold">
+                Recommendations
+              </Text>
+              <Divider my="sm" />
+              <div className="flex justify-center">
+                <Recommendations id={id} />
+              </div>
             </div>
           </div>
-          <div></div>
         </div>
       </Container>
     </>

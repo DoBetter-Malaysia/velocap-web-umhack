@@ -88,117 +88,118 @@ const useGetMetrics = ({ profile }: MetricProps) => {
           });
         }
       }
-      // Engagements
-      if (cur.lastEngagement == "") {
-        cur.lastEngagement = defaultSettings.lastEngagement;
-      }
-      if (
-        new Date(cur.lastEngagement).getTime() >
-        new Date(profile.last_engagement_at).getTime()
-      ) {
-        data.push({
-          key: `Last Engagement: ${new Date(
-            profile.last_engagement_at
-          ).toDateString()}`,
-          details: "Last Engagement was too long ago",
-          status: false,
-        });
-      } else {
-        data.push({
-          key: `Last Engagement: ${new Date(
-            profile.last_engagement_at
-          ).toDateString()}`,
-          details: "Last Engagement was recent",
-          status: true,
-        });
-      }
-      // fundingRounds
-      if (cur.fundingRounds == "") {
-        cur.fundingRounds = defaultSettings.fundingRounds;
-      }
-      if (cur.fundingRounds == profile.funding_rounds) {
-        data.push({
-          key: `Funding Rounds: ${profile.funding_rounds}`,
-          details: "Funding Rounds match your metrics",
-          status: true,
-        });
-      } else {
-        data.push({
-          key: `Funding Rounds: ${profile.funding_rounds}`,
-          details: "Funding Rounds do not match your metrics",
-          status: false,
-        });
-      }
-      // fundingTotal
-      if (cur.fundingTotal == "") {
-        cur.fundingTotal = defaultSettings.fundingTotal;
-      }
-      if (Math.abs(cur.fundingTotal - profile.funding_total_usd) < 10_000) {
-        data.push({
-          key: `Funding Total: \$${profile.funding_total_usd}`,
-          details: "Funding Total was close to your metrics",
-          status: true,
-        });
-      } else {
-        data.push({
-          key: `Funding Total: \$${profile.funding_total_usd}`,
-          details: "Funding Total was far from your metrics",
-          status: false,
-        });
-      }
-      // Founders yoe
-      if (cur.founderYearsOfExperience == "") {
-        cur.founderYearsOfExperience = defaultSettings.founderYearsOfExperience;
-      }
-      let total = 0;
-      profile.founders.forEach((f) => {
-        total += f.years_of_experience;
+    }
+    // Engagements
+
+    if (cur.lastEngagement == "") {
+      cur.lastEngagement = defaultSettings.lastEngagement;
+    }
+    if (
+      new Date(cur.lastEngagement).getTime() >
+      new Date(profile.last_engagement_at).getTime()
+    ) {
+      data.push({
+        key: `Last Engagement: ${new Date(
+          profile.last_engagement_at
+        ).toDateString()}`,
+        details: "Last Engagement was too long ago",
+        status: false,
       });
-      total /= profile.founders.length;
-      const temp = total.toFixed(2);
-
-      if (total - cur.founderYearsOfExperience >= -3) {
-        data.push({
-          key: `Founder average year of experience: ${temp}`,
-          details:
-            "Founder average year of experience is close to your expectation",
-          status: true,
-        });
-      } else {
-        data.push({
-          key: `Founder average year of experience: ${temp}`,
-          details:
-            "Founder average year of experience is far from your expectation",
-          status: false,
-        });
-      }
-
-      // previously founded
-      if (cur.noOfPreviousStartups == "") {
-        cur.noOfPreviousStartups = defaultSettings.noOfPreviousStartups;
-      }
-      total = 0;
-      profile.founders.forEach((f) => {
-        total += f.prev_founded;
+    } else {
+      data.push({
+        key: `Last Engagement: ${new Date(
+          profile.last_engagement_at
+        ).toDateString()}`,
+        details: "Last Engagement was recent",
+        status: true,
       });
-      total /= profile.founders.length;
-      const x = total.toFixed(2);
+    }
+    // fundingRounds
+    if (cur.fundingRounds == "") {
+      cur.fundingRounds = defaultSettings.fundingRounds;
+    }
+    if (cur.fundingRounds == profile.funding_rounds) {
+      data.push({
+        key: `Funding Rounds: ${profile.funding_rounds}`,
+        details: "Funding Rounds match your metrics",
+        status: true,
+      });
+    } else {
+      data.push({
+        key: `Funding Rounds: ${profile.funding_rounds}`,
+        details: "Funding Rounds do not match your metrics",
+        status: false,
+      });
+    }
+    // fundingTotal
+    if (cur.fundingTotal == "") {
+      cur.fundingTotal = defaultSettings.fundingTotal;
+    }
+    if (Math.abs(cur.fundingTotal - profile.funding_total_usd) < 10_000) {
+      data.push({
+        key: `Funding Total: \$${profile.funding_total_usd}`,
+        details: "Funding Total was close to your metrics",
+        status: true,
+      });
+    } else {
+      data.push({
+        key: `Funding Total: \$${profile.funding_total_usd}`,
+        details: "Funding Total was far from your metrics",
+        status: false,
+      });
+    }
+    // Founders yoe
+    if (cur.founderYearsOfExperience == "") {
+      cur.founderYearsOfExperience = defaultSettings.founderYearsOfExperience;
+    }
+    let total = 0;
+    profile.founders.forEach((f) => {
+      total += f.years_of_experience;
+    });
+    total /= profile.founders.length;
+    const temp = total.toFixed(2);
 
-      if (Math.abs(cur.noOfPreviousStartups - total) <= 3) {
-        data.push({
-          key: `Founders Average No. of previous startups: ${x}`,
-          details:
-            "Founders Average No. of previous startups is close to your expectation",
-          status: true,
-        });
-      } else {
-        data.push({
-          key: `Founders Average No. of previous startups: ${x}`,
-          details:
-            "Founders Average No. of previous startups is far from your expectation",
-          status: false,
-        });
-      }
+    if (total - cur.founderYearsOfExperience >= -3) {
+      data.push({
+        key: `Founder average year of experience: ${temp}`,
+        details:
+          "Founder average year of experience is close to your expectation",
+        status: true,
+      });
+    } else {
+      data.push({
+        key: `Founder average year of experience: ${temp}`,
+        details:
+          "Founder average year of experience is far from your expectation",
+        status: false,
+      });
+    }
+
+    // previously founded
+    if (cur.noOfPreviousStartups == "") {
+      cur.noOfPreviousStartups = defaultSettings.noOfPreviousStartups;
+    }
+    total = 0;
+    profile.founders.forEach((f) => {
+      total += f.prev_founded;
+    });
+    total /= profile.founders.length;
+    const x = total.toFixed(2);
+
+    if (Math.abs(cur.noOfPreviousStartups - total) <= 3) {
+      data.push({
+        key: `Founders Average No. of previous startups: ${x}`,
+        details:
+          "Founders Average No. of previous startups is close to your expectation",
+        status: true,
+      });
+    } else {
+      data.push({
+        key: `Founders Average No. of previous startups: ${x}`,
+        details:
+          "Founders Average No. of previous startups is far from your expectation",
+        status: false,
+      });
     }
     return data;
   }, [heuristicFilterOptions, profile]);
