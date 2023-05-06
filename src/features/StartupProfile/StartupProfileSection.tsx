@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { ActionIcon, Badge, Divider, Group, Text } from "@mantine/core";
 import {
   IconAddressBook,
+  IconHeart,
   IconPinned,
   IconPinnedOff,
 } from "@tabler/icons-react";
@@ -30,9 +31,14 @@ const StartupProfileSection = ({ startUpProfile }: StartupProfileSection) => {
             StartUp Profile
           </Text>
         </div>
-        <ActionIcon onClick={toggleProfilePin}>
-          {isProfilePinned ? <IconPinnedOff /> : <IconPinned />}
-        </ActionIcon>
+        <div className="flex flex-row">
+          <ActionIcon>
+            <IconHeart />
+          </ActionIcon>{" "}
+          <ActionIcon onClick={toggleProfilePin}>
+            {isProfilePinned ? <IconPinnedOff /> : <IconPinned />}
+          </ActionIcon>
+        </div>
       </div>
       <Divider my="sm" />
       <div className=" flex flex-col gap-4">

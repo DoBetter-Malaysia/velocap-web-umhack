@@ -34,6 +34,9 @@ const Navbar = () => {
             <Logo />
           </div>
         </Link>
+        <div>
+          <Button className="py-4">My Favorite</Button>
+        </div>
       </nav>
     </div>
   );

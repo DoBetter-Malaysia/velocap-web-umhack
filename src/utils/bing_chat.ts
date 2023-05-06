@@ -2,7 +2,8 @@ import { BingChat } from "bing-chat";
 
 async function bingPredict(question: string) {
   const api = new BingChat({
-    cookie: "_U=1BBcS762Ylh1Kah05V8VciSYGS3F1-6lstFdDAGz3eNz5NuBHOmMgBF5YjLWkPlI2m84RBlzn557W67X7ihaQeBDtO2LsWei5wwifkfUNKIW16xmn4Ujy6LilLBBBspG9gtRHQemrMqne_-mfR8nPYEZLt6r1luyYdQNk8aJ7u9-C4KEE_LlP5nWj-5_hJ_0fzfE6aiVgOGtqMBC2NalR-aZLVFVgmIP7nfk1JgrxXpA;",
+    cookie: "",
+    // "_U=1rN01PfZrAWztlvXMxbVNXf7BdBRo44mnqEMVahfc20W0rOJE-JxcJOU-aFKHYv6pQxDcBHjVnkYpTt-UpXmec27Ht_6xWWq5vAlG4x5tEXcEOUQ94OfawewePKz9DeB-ONVlSHtaVjYtFdKx6Ffe1CpCH9Gpzn7N1K6ZZOoJjkhIGR64MP2HkOIZOZSwSBvCgXc3M0cnLuWpp4PU5tpUyQ;",
   });
   console.log(question);
 

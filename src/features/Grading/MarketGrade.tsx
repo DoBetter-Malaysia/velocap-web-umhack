@@ -5,9 +5,10 @@ import axios from "axios";
 interface MarketGradeProps {
   domain: string;
   country: string;
+  setter: (x: boolean) => void;
 }
 
-const MarketGrade = ({ domain, country }: MarketGradeProps) => {
+const MarketGrade = ({ domain, country, setter }: MarketGradeProps) => {
   const [res, setRes] = useState<null | string>(null);
   const [grade, setGrade] = useState<boolean>(false);
 
@@ -24,7 +25,8 @@ const MarketGrade = ({ domain, country }: MarketGradeProps) => {
           callBing();
           return;
         }
-        setGrade(grade == "Yes" ? true : false);
+        setGrade(grade == "Yes");
+        setter(grade == "Yes");
         setRes(explanation);
       });
   };

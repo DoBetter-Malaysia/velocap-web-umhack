@@ -28,6 +28,7 @@ import PresetDropdownItem from "./PresetDropdownItem";
 import { useForm } from "@mantine/form";
 import { DateInput } from "@mantine/dates";
 import { useSetState } from "@mantine/hooks";
+import { defaultSettings } from "../metrics/Metric";
 
 interface HeuristicFilterProps {
   close: () => void;
@@ -74,7 +75,9 @@ const HeuristicFilter = ({ close }: HeuristicFilterProps) => {
     useHeuristicFilterOptionsStore();
 
   const heuristicFilterForm = useForm({
-    initialValues: heuristicFilterOptions,
+    initialValues: heuristicFilterOptions.initialized
+      ? heuristicFilterOptions
+      : defaultSettings,
     validate: {
       companyFoundedMinYear: (value: number) => {
         if (!value) return null;

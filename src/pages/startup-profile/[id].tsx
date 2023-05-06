@@ -3,12 +3,15 @@ import {
   Badge,
   Container,
   Divider,
+  Group,
+  Loader,
   List,
   Table,
   Text,
 } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { IconHeart, IconPinned, IconPinnedOff } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import {
   IconMenu2,
@@ -25,19 +28,20 @@ import FounderGrade from "@/features/Grading/FounderGrade";
 import CompanyProfileGrade from "@/features/Grading/CompanyProfileGrade";
 import CompanyCredibility from "@/features/Grading/CompanyCredibility";
 import CompanyFinanceGrade from "@/features/Grading/CompanyFinanceGrade";
+import Metric from "@/features/metrics/Metric";
+import useGetMetrics, { MetricType } from "@/features/metrics/useGetMetrics";
+import Recommendations from "@/features/Recommendations/Recommendations";
 import StartupProfileSection from "@/features/StartupProfile/StartupProfileSection";
 import NewsArticle from "@/features/StartupProfile/NewsArticle";
 import NewsSection from "@/features/StartupProfile/NewsSection";
 
 export enum StartUpGrade {
-  APlus,
   A,
-  BPlus,
   B,
-  CPlus,
   C,
   D,
   X,
+  Loading,
 }
 
 const getStartUpGrade = (grade: StartUpGrade) => {
@@ -45,34 +49,16 @@ const getStartUpGrade = (grade: StartUpGrade) => {
   let textColor = "";
   let gradeText = "?";
   switch (grade) {
-    case StartUpGrade.APlus: {
-      bgColor = "bg-yellow-100";
-      textColor = "text-yellow-600";
-      gradeText = "A+";
-      break;
-    }
     case StartUpGrade.A: {
       bgColor = "bg-green-200";
       textColor = "text-green-600";
       gradeText = "A";
       break;
     }
-    case StartUpGrade.BPlus: {
-      bgColor = "bg-emerald-200";
-      textColor = "text-emerald-600";
-      gradeText = "B+";
-      break;
-    }
     case StartUpGrade.B: {
       bgColor = "bg-teal-200";
       textColor = "text-teal-600";
       gradeText = "B";
-      break;
-    }
-    case StartUpGrade.CPlus: {
-      bgColor = "bg-violet-200";
-      textColor = "text-violet-600";
-      gradeText = "C+";
       break;
     }
     case StartUpGrade.C: {
@@ -104,22 +90,48 @@ const getStartUpGrade = (grade: StartUpGrade) => {
   );
 };
 
-const navItems = [
-  {
-    href: "#metrics",
-    label: "Performance Metrics",
-    icon: IconRulerMeasure,
-  },
-  { href: "#velocard", label: "VeloCard", icon: IconReportSearch },
-  { href: "#founders", label: "Founders List", icon: IconUsers },
-  { href: "#news", label: "News Section", icon: IconNews },
-];
+const checkGrade = (arr: MetricType, marketProspect?: boolean | null) => {
+  let res = 0;
+  if (!arr.length) {
+    return StartUpGrade.Loading;
+  }
+  if (arr[4].status && arr[5].status) {
+    res++;
+  }
+  if (arr[1].status) {
+    res++;
+  }
+  if (arr[2].status && arr[3].status) {
+    res += 2;
+  }
+  if (marketProspect == undefined) {
+    return StartUpGrade.Loading;
+  }
+  if (marketProspect) {
+    res += 1;
+  }
+  switch (res) {
+    case 0:
+      return StartUpGrade.X;
+    case 1:
+      return StartUpGrade.D;
+    case 2:
+      return StartUpGrade.C;
+    case 3:
+      return StartUpGrade.B;
+    case 4:
+    case 5:
+      return StartUpGrade.A;
+  }
+};
 
 const StartUpProfile = () => {
   const [loading, setLoading] = useState(false);
   const [startUpProfile, setStartUpProfile] = useState<Startup>();
   const router = useRouter();
   const { id } = router.query;
+  const [pros, setPros] = useState(false);
+  const [isProfilePinned, setIsProfilePinned] = useState<boolean>(false);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -130,6 +142,22 @@ const StartUpProfile = () => {
       setLoading(false);
     });
   }, [router.isReady]);
+  function toggleProfilePin(e: React.MouseEvent<HTMLButtonElement>) {
+    setIsProfilePinned(!isProfilePinned);
+  }
+
+  const metrics = useGetMetrics({ profile: startUpProfile });
+  const grade = checkGrade(metrics, pros);
+  const navItems = [
+    {
+      href: "#metrics",
+      label: "Performance Metrics",
+      icon: IconRulerMeasure,
+    },
+    { href: "#velocard", label: "VeloCard", icon: IconReportSearch },
+    { href: "#founders", label: "Founders List", icon: IconUsers },
+    { href: "#news", label: "News Section", icon: IconNews },
+  ];
 
   return (
     <>
@@ -167,7 +195,7 @@ const StartUpProfile = () => {
               </div>
               <Divider my="sm" />
               <div className="pointer-events-none flex select-none justify-center">
-                <div className="text-[9rem]">🤷‍♂️</div>
+                <Metric profile={profile} />
               </div>
             </div>
             <div id="velocard" className="rounded-md bg-white p-4 shadow">
@@ -189,11 +217,15 @@ const StartUpProfile = () => {
                 <MarketGrade
                   domain={startUpProfile?.market ?? ""}
                   country={startUpProfile?.country_code ?? ""}
+                  setter={setPros}
                 />
-                <FounderGrade founders={startUpProfile?.founders ?? []} />
-                <CompanyProfileGrade />
-                <CompanyCredibility />
-                <CompanyFinanceGrade />
+                <FounderGrade metrics={metrics} />
+                <CompanyProfileGrade metrics={metrics} />
+                <CompanyCredibility
+                  metrics={metrics}
+                  profile={startUpProfile}
+                />
+                <CompanyFinanceGrade metrics={metrics} />
               </Accordion>
             </div>
             <div id="founders" className="rounded-md bg-white p-4 shadow">
@@ -237,6 +269,16 @@ const StartUpProfile = () => {
             </div>
             <NewsSection startUpProfile={startUpProfile} />
           </div>
+          <div className="rounded-md bg-white p-4 shadow">
+            <Text fz="lg" fw="bold">
+              Recommendations
+            </Text>
+            <Divider my="sm" />
+            <div className="flex justify-center">
+              <Recommendations id={id} />
+            </div>
+          </div>
+          <div></div>
         </div>
       </Container>
     </>

@@ -1,14 +1,20 @@
 import Grade from "./Grade";
+import { MetricType } from "../metrics/useGetMetrics";
 
-interface CompanyProfileGradeProps {}
+interface CompanyProfileGradeProps {
+  metrics: MetricType;
+}
 
-const CompanyProfileGrade = () => {
+const CompanyProfileGrade = ({ metrics }: CompanyProfileGradeProps) => {
+  const explanation = metrics[1].status
+    ? "The company is still very active"
+    : "The company has been inactive for a long period of time";
   return (
     <Grade
-      explanation="Good"
+      explanation={explanation}
       loading={false}
       title="Company Profile"
-      grade={true}
+      grade={metrics[1].status}
     />
   );
 };
