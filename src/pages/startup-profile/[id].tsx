@@ -1,19 +1,26 @@
-import { StartUpCardProps } from "@/features/Landing/Card/StartupCard";
 import {
   Accordion,
-  ActionIcon,
   Badge,
   Container,
   Divider,
   Group,
   Loader,
+  List,
   Table,
   Text,
 } from "@mantine/core";
 import axios from "axios";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
 import { IconHeart, IconPinned, IconPinnedOff } from "@tabler/icons-react";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  IconMenu2,
+  IconNews,
+  IconReportSearch,
+  IconRulerMeasure,
+  IconTilde,
+  IconUsers,
+} from "@tabler/icons-react";
 import Link from "next/link";
 import { Startup } from "@/interfaces/startup";
 import MarketGrade from "@/features/Grading/MarketGrade";
@@ -24,6 +31,9 @@ import CompanyFinanceGrade from "@/features/Grading/CompanyFinanceGrade";
 import Metric from "@/features/metrics/Metric";
 import useGetMetrics, { MetricType } from "@/features/metrics/useGetMetrics";
 import Recommendations from "@/features/Recommendations/Recommendations";
+import StartupProfileSection from "@/features/StartupProfile/StartupProfileSection";
+import NewsArticle from "@/features/StartupProfile/NewsArticle";
+import NewsSection from "@/features/StartupProfile/NewsSection";
 
 export enum StartUpGrade {
   A,
@@ -58,8 +68,8 @@ const getStartUpGrade = (grade: StartUpGrade) => {
       break;
     }
     case StartUpGrade.D: {
-      bgColor = "";
-      textColor = "";
+      bgColor = "bg-orange-200";
+      textColor = "text-orange-600";
       gradeText = "D";
       break;
     }
@@ -117,11 +127,11 @@ const checkGrade = (arr: MetricType, marketProspect?: boolean | null) => {
 
 const StartUpProfile = () => {
   const [loading, setLoading] = useState(false);
-  const [pros, setPros] = useState<null | boolean>(null);
-  const [isProfilePinned, setIsProfilePinned] = useState<boolean>(false);
   const [startUpProfile, setStartUpProfile] = useState<Startup>();
   const router = useRouter();
   const { id } = router.query;
+  const [pros, setPros] = useState(false);
+  const [isProfilePinned, setIsProfilePinned] = useState<boolean>(false);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -132,159 +142,132 @@ const StartUpProfile = () => {
       setLoading(false);
     });
   }, [router.isReady]);
-
   function toggleProfilePin(e: React.MouseEvent<HTMLButtonElement>) {
     setIsProfilePinned(!isProfilePinned);
   }
 
   const metrics = useGetMetrics({ profile: startUpProfile });
   const grade = checkGrade(metrics, pros);
+  const navItems = [
+    {
+      href: "#metrics",
+      label: "Performance Metrics",
+      icon: IconRulerMeasure,
+    },
+    { href: "#velocard", label: "VeloCard", icon: IconReportSearch },
+    { href: "#founders", label: "Founders List", icon: IconUsers },
+    { href: "#news", label: "News Section", icon: IconNews },
+  ];
 
   return (
-    <Container size="lg" py="1rem">
-      <div className="grid grid-cols-[0.61803398875fr_1fr] gap-4 ">
-        <div
-          className={`${
-            isProfilePinned ? "sticky top-[5rem]" : ""
-          } h-min rounded-md bg-white p-4 shadow`}
-        >
-          <div className="flex justify-between">
-            <Text fz="lg" fw="bold">
-              StartUp Profile
-            </Text>
-            <div className="flex flex-row">
-              <ActionIcon>
-                <IconHeart />
-              </ActionIcon>{" "}
-              <ActionIcon onClick={toggleProfilePin}>
-                {isProfilePinned ? <IconPinnedOff /> : <IconPinned />}
-              </ActionIcon>
+    <>
+      <Accordion className="sticky top-[0.5rem] z-20 mx-auto mt-[-5rem] w-1/2 rounded-md bg-white">
+        <Accordion.Item value="nav">
+          <Accordion.Control icon={<IconMenu2 />}>
+            Table of Contents
+          </Accordion.Control>
+          <Accordion.Panel>
+            <List>
+              {navItems.map((nav) => (
+                <List.Item key={nav.href}>
+                  <div className="flex items-center gap-4">
+                    <nav.icon size="16px" />
+                    <Link className="text-blue-500" href={nav.href}>
+                      {nav.label}
+                    </Link>
+                  </div>
+                </List.Item>
+              ))}
+            </List>
+          </Accordion.Panel>
+        </Accordion.Item>
+      </Accordion>
+      <Container size="lg" py="2rem">
+        <div className="grid grid-cols-[0.61803398875fr_1fr] gap-4 ">
+          <StartupProfileSection startUpProfile={startUpProfile} />
+          <div className="flex flex-col gap-4">
+            <div id="metrics" className="rounded-md bg-white p-4 shadow">
+              <div className="flex items-center gap-2">
+                <IconRulerMeasure />
+                <Text fz="lg" fw="bold">
+                  Preference Metrics
+                </Text>
+              </div>
+              <Divider my="sm" />
+              <div className="pointer-events-none flex select-none justify-center">
+                <Metric profile={profile} />
+              </div>
             </div>
-          </div>
-          <Divider my="sm" />
-          <div className=" flex flex-col gap-4">
-            <div className="h-auto w-auto">
-              <img
-                className="h-[300px] w-full rounded object-cover"
-                src={startUpProfile?.picture ?? "/logo.png"}
-                alt=""
-              />
+            <div id="velocard" className="rounded-md bg-white p-4 shadow">
+              <div className="flex items-center gap-2">
+                <IconReportSearch />
+                <Text fz="lg" fw="bold" className="">
+                  VeloCard
+                </Text>
+              </div>
+              <Divider my="sm" />
+              <div className="pointer-events-none flex select-none justify-center">
+                {getStartUpGrade(StartUpGrade.D)}
+              </div>
+              <div className="border-b-solid mb-2 mt-4 flex flex-row border-b-2 border-b-gray-100 px-5 pb-2">
+                <div className="flex-[2] text-start text-lg">Aspect</div>
+                <div className="flex-1 text-end text-lg">Analysis</div>
+              </div>
+              <Accordion multiple>
+                <MarketGrade
+                  domain={startUpProfile?.market ?? ""}
+                  country={startUpProfile?.country_code ?? ""}
+                  setter={setPros}
+                />
+                <FounderGrade metrics={metrics} />
+                <CompanyProfileGrade metrics={metrics} />
+                <CompanyCredibility
+                  metrics={metrics}
+                  profile={startUpProfile}
+                />
+                <CompanyFinanceGrade metrics={metrics} />
+              </Accordion>
             </div>
-            <div>
-              <Text fz="xs" fw="bold" className="uppercase" color="gray.6">
-                Name
-              </Text>
-              <Text>{startUpProfile?.name}</Text>
-            </div>
-            <div>
-              <Text fz="xs" fw="bold" className="uppercase" color="gray.6">
-                Description
-              </Text>
-              <Text fz="sm">{startUpProfile?.description}</Text>
-            </div>
-            <div>
-              <Text fz="xs" fw="bold" className="uppercase" color="gray.6">
-                Categories
-              </Text>
-              <Group position="left" mt="md" mb="xs" spacing="xs">
-                {startUpProfile?.category_list.split("|").map((cat, key) => (
-                  <Badge color="blue" variant="light" key={key}>
-                    {cat}
-                  </Badge>
-                ))}
-              </Group>
-            </div>
-            <div>
-              <Text fz="xs" fw="bold" className="uppercase" color="gray.6">
-                Year Established
-              </Text>
-              <Text>
-                {new Date(startUpProfile?.founded_at ?? "").getFullYear()}
-              </Text>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-4">
-          <div className="rounded-md bg-white p-4 shadow">
-            <Text fz="lg" fw="bold">
-              Metrics Summary
-            </Text>
-            <Divider my="sm" />
-            <div className="flex justify-center">
-              <Metric profile={startUpProfile} />
-            </div>
-          </div>
-          <div className="rounded-md bg-white p-4 shadow">
-            <Text fz="lg" fw="bold">
-              Velo Card
-            </Text>
-            <Divider my="sm" />
-            <div className="pointer-events-none flex select-none justify-center">
-              {grade == StartUpGrade.Loading ? (
-                <Loader size={"xl"} />
-              ) : (
-                getStartUpGrade(grade)
-              )}
-            </div>
-            <div className="border-b-solid mb-2 mt-4 flex flex-row border-b-2 border-b-gray-100 px-5 pb-2">
-              <div className="flex-[2] text-start text-lg">Aspect</div>
-              <div className="flex-1 text-end text-lg">Analysis</div>
-            </div>
-            <Accordion multiple>
-              {metrics.length > 2 && (
-                <>
-                  <MarketGrade
-                    domain={startUpProfile?.market ?? ""}
-                    country={startUpProfile?.country_code ?? ""}
-                    setter={setPros}
-                  />
-                  <FounderGrade metrics={metrics} />
-
-                  <CompanyProfileGrade metrics={metrics} />
-                  <CompanyCredibility
-                    metrics={metrics}
-                    profile={startUpProfile}
-                  />
-                  <CompanyFinanceGrade metrics={metrics} />
-                </>
-              )}
-            </Accordion>
-          </div>
-          <div className="rounded-md bg-white p-4 shadow">
-            <Text fz="lg" fw="bold">
-              Founders
-            </Text>
-            <Divider my="sm" />
-            <Table>
-              <thead>
-                <tr>
-                  <th></th>
-                  <th>Founder name</th>
-                  <th>Years of experience</th>
-                  <th>No. of previous startups</th>
-                </tr>
-              </thead>
-              <tbody>
-                {startUpProfile?.founders.map((f, key) => (
-                  <tr key={key}>
-                    <td>
-                      <img
-                        className="h-[25px] w-[25px] rounded-full"
-                        src={f.picture}
-                        alt=""
-                      />
-                    </td>
-                    <td>
-                      <a href={f.linkedin} className="text-blue-500">
-                        {f.name}
-                      </a>
-                    </td>
-                    <td>{f.years_of_experience}</td>
-                    <td>{f.prev_founded}</td>
+            <div id="founders" className="rounded-md bg-white p-4 shadow">
+              <div className="flex items-center gap-2">
+                <IconUsers />
+                <Text fz="lg" fw="bold" className="">
+                  Founders
+                </Text>
+              </div>
+              <Divider my="sm" />
+              <Table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>Founder name</th>
+                    <th>Years of experience</th>
+                    <th>No. of previous startups</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
+                </thead>
+                <tbody>
+                  {startUpProfile?.founders.map((f, key) => (
+                    <tr key={key}>
+                      <td>
+                        <img
+                          className="h-[25px] w-[25px] rounded-full"
+                          src={f.picture}
+                          alt=""
+                        />
+                      </td>
+                      <td>
+                        <a href={f.linkedin} className="text-blue-500">
+                          {f.name}
+                        </a>
+                      </td>
+                      <td>{f.years_of_experience}</td>
+                      <td>{f.prev_founded}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
+            <NewsSection startUpProfile={startUpProfile} />
           </div>
           <div className="rounded-md bg-white p-4 shadow">
             <Text fz="lg" fw="bold">
@@ -297,8 +280,8 @@ const StartUpProfile = () => {
           </div>
           <div></div>
         </div>
-      </div>
-    </Container>
+      </Container>
+    </>
   );
 };
 

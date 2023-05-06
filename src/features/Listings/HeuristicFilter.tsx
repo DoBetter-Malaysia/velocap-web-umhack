@@ -112,23 +112,18 @@ const HeuristicFilter = ({ close }: HeuristicFilterProps) => {
 
   return (
     <>
-      <Grid align="center">
-        <Grid.Col span={4}>
-          <Text fz="xl">Ranking Metrics</Text>
-        </Grid.Col>
-        <Grid.Col span={7}>
-          <Select
-            placeholder="Presets..."
-            itemComponent={PresetDropdownItem}
-            data={presets}
-          />
-        </Grid.Col>
-        <Grid.Col span={1}>
-          <ActionIcon onClick={() => onFormCancel()}>
-            <IconX />
-          </ActionIcon>
-        </Grid.Col>
-      </Grid>
+      <div className="flex items-center justify-between gap-4">
+        <Text fz="xl">Ranking Metrics</Text>
+        <Select
+          className="flex-grow"
+          placeholder="Presets..."
+          itemComponent={PresetDropdownItem}
+          data={presets}
+        />
+        <ActionIcon onClick={() => onFormCancel()}>
+          <IconX />
+        </ActionIcon>
+      </div>
       <Divider my="sm" />
       {(() => {
         if (getOption("initialized")) return;
@@ -213,14 +208,11 @@ const HeuristicFilter = ({ close }: HeuristicFilterProps) => {
               min={1}
               placeholder="Funding total"
               label="Funding total"
-              parser={(value) => value.replace(/RM\s?|(,*)/g, "")}
+              parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
               formatter={(value) =>
                 !Number.isNaN(parseFloat(value))
-                  ? `RM ${value}`.replace(
-                      /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g,
-                      ","
-                    )
-                  : "RM "
+                  ? `$ ${value}`.replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+                  : "$ "
               }
             />
           </div>
