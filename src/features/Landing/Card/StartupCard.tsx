@@ -25,23 +25,35 @@ const StartUpCard = ({
 }: StartUpCardProps) => {
   const categories = category_list.split("|");
   return (
-    <Card w={"28%"} shadow="sm" padding="lg" radius="md" withBorder>
-      <Card.Section>
-        <Image src={imgUrl ?? "/logo.png"} height={160} alt="Random Image" />
-      </Card.Section>
-      <Group position="left" mt="md" mb="xs" spacing="xs">
-        {categories.map((cat, key) => (
-          <Badge color="blue" variant="light" key={key}>
-            {cat}
-          </Badge>
-        ))}
-      </Group>
-      <Text weight={500}>{name}</Text>
-      <Text size="sm" color="dimmed" lineClamp={2}>
-        {description}
-      </Text>
+    <Card
+      w={"28%"}
+      shadow="sm"
+      padding="0"
+      radius="md"
+      withBorder
+      className="flex flex-col justify-between"
+    >
+      <div>
+        <Card.Section>
+          <Image src={imgUrl ?? "/logo.png"} height={160} alt="Random Image" />
+        </Card.Section>
 
-      <Link href={`startup-profile/${id}`}>
+        <div className="px-4">
+          <Group position="left" mt="md" mb="xs" spacing="xs">
+            {categories.slice(0, 3).map((cat, key) => (
+              <Badge color="blue" variant="light" key={key}>
+                {cat}
+              </Badge>
+            ))}
+          </Group>
+
+          <Text weight={500}>{name}</Text>
+          <Text size="sm" color="dimmed" lineClamp={2}>
+            {description}
+          </Text>
+        </div>
+      </div>
+      <Link href={`startup-profile/${id}`} className="mb-4 px-4">
         <Button className="text-sm" fullWidth mt="md">
           View Startup Profile
         </Button>

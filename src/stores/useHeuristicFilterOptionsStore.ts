@@ -26,7 +26,11 @@ const useHeuristicFilterOptionsStore = create<HeuristicFilterOptionsStore>()(
       setOptions: (options: Partial<HeuristicFilterOptions>) => {
         set({ ...get().heuristicFilterOptions, ...options });
       },
-      getOptions: () => get().heuristicFilterOptions,
+      getOptions: () => {
+        const x = get().heuristicFilterOptions;
+        console.log(x);
+        return x;
+      },
     }),
     { name: "heuristic-filter-options" }
   )

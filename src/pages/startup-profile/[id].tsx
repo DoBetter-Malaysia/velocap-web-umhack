@@ -170,13 +170,9 @@ const StartUpProfile = () => {
               <Text fz="xs" fw="bold" className="uppercase" color="gray.6">
                 Year Established
               </Text>
-              <Text>2019</Text>
-            </div>
-            <div>
-              <Text fz="xs" fw="bold" className="uppercase" color="gray.6">
-                No. of Employees
+              <Text>
+                {new Date(startUpProfile?.founded_at ?? "").getFullYear()}
               </Text>
-              <Text>50-100</Text>
             </div>
           </div>
         </div>
