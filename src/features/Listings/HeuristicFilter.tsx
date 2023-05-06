@@ -10,6 +10,7 @@ import {
   Group,
   Header,
   Modal,
+  MultiSelect,
   NumberInput,
   RangeSlider,
   Select,
@@ -29,8 +30,6 @@ import { DateInput } from "@mantine/dates";
 import { useSetState } from "@mantine/hooks";
 
 interface HeuristicFilterProps {
-  opened: boolean;
-  open: () => void;
   close: () => void;
 }
 
@@ -70,10 +69,12 @@ const presets: SelectItem[] = [
   },
 ];
 
-const HeuristicFilter = ({ opened, open, close }: HeuristicFilterProps) => {
-  const { getOption, setOption, setOptions } = useHeuristicFilterOptionsStore();
+const HeuristicFilter = ({ close }: HeuristicFilterProps) => {
+  const { getOption, setOption, setOptions, heuristicFilterOptions } =
+    useHeuristicFilterOptionsStore();
 
   const heuristicFilterForm = useForm({
+    initialValues: heuristicFilterOptions,
     validate: {
       companyFoundedMinYear: (value: number) => {
         if (value === null) return null;
@@ -93,11 +94,7 @@ const HeuristicFilter = ({ opened, open, close }: HeuristicFilterProps) => {
   });
 
   function updateHeuristicFilters(e: HeuristicFilterOptions) {
-    setOption("initialized", true);
-    console.log(e);
-
-    setOptions(e);
-
+    setOptions({ ...e, initialized: true });
     close();
   }
 
@@ -111,7 +108,7 @@ const HeuristicFilter = ({ opened, open, close }: HeuristicFilterProps) => {
   }
 
   return (
-    <Modal opened={opened} onClose={close} withCloseButton={false} size="lg">
+    <>
       <Grid align="center">
         <Grid.Col span={4}>
           <Text fz="xl">Ranking Metrics</Text>
@@ -156,7 +153,7 @@ const HeuristicFilter = ({ opened, open, close }: HeuristicFilterProps) => {
         onSubmit={heuristicFilterForm.onSubmit(updateHeuristicFilters)}
         onReset={() => onFormCancel()}
       >
-        <div className="flex min-h-[16rem] flex-col gap-4">
+        <div className="flex min-h-[16rem] flex-col gap-2">
           <div>
             <Text fz="lg" fw="bold">
               Company Profile
@@ -186,8 +183,20 @@ const HeuristicFilter = ({ opened, open, close }: HeuristicFilterProps) => {
             placeholder="Last Engagement"
             maxDate={new Date()}
           />
-          <div>
-            <Text fz="lg" fw="bold">
+          <MultiSelect
+            data={[
+              { label: "Operating", value: "operating" },
+              { label: "Acquired", value: "acquired" },
+              { label: "Closed", value: "closed" },
+              { label: "IPO", value: "ipo" },
+            ]}
+            {...heuristicFilterForm.getInputProps("companyStatus")}
+            min={1}
+            placeholder="Company status"
+            label="Company status"
+          />
+          <div className="space-y-2">
+            <Text fz="lg" fw="bold" className="mt-2">
               Finances
             </Text>
             <NumberInput
@@ -212,8 +221,8 @@ const HeuristicFilter = ({ opened, open, close }: HeuristicFilterProps) => {
               }
             />
           </div>
-          <div>
-            <Text fz="lg" fw="bold">
+          <div className="space-y-2">
+            <Text fz="lg" fw="bold" className="mt-2">
               Founder Profile
             </Text>
             <NumberInput
@@ -255,7 +264,7 @@ const HeuristicFilter = ({ opened, open, close }: HeuristicFilterProps) => {
           </Button>
         </div>
       </form>
-    </Modal>
+    </>
   );
 };
 

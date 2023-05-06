@@ -5,7 +5,7 @@ import { useDisclosure } from "@mantine/hooks";
 import HeuristicFilter from "./Listings/HeuristicFilter";
 import useHeuristicFilterOptionsStore from "@/stores/useHeuristicFilterOptionsStore";
 import axios from "axios";
-import { Container } from "@mantine/core";
+import { Container, Modal } from "@mantine/core";
 
 const Listings = () => {
   const [loading, setLoading] = useState(false);
@@ -27,7 +27,7 @@ const Listings = () => {
 
   useEffect(() => {
     setLoading(true);
-    axios("/api/startups").then((res) => {
+    axios("http://127.0.0.1:5000/startups").then((res) => {
       setStartUpData(res.data);
       setLoading(false);
     });
@@ -54,11 +54,15 @@ const Listings = () => {
           ))}
         </div>
       </Container>
-      <HeuristicFilter
+
+      <Modal
         opened={isHeuristicFilterModalOpen}
-        open={openHeuristicFilterModalOpen}
-        close={closeHeuristicFilterModalOpen}
-      />
+        onClose={closeHeuristicFilterModalOpen}
+        withCloseButton={false}
+        size="lg"
+      >
+        <HeuristicFilter close={closeHeuristicFilterModalOpen} />
+      </Modal>
     </>
   );
 };

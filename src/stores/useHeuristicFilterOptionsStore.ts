@@ -8,13 +8,12 @@ export interface HeuristicFilterOptionsStore {
   getOption: (key: string) => any;
   setOption: (key: string, value: any) => void;
   setOptions: (options: Partial<HeuristicFilterOptions>) => void;
-  getOptions: () => HeuristicFilterOptions;
 }
 
 const useHeuristicFilterOptionsStore = create<HeuristicFilterOptionsStore>()(
   persist(
     (set, get) => ({
-      heuristicFilterOptions: new Map<String, any>([]),
+      heuristicFilterOptions: {},
       getOption: (key: string) => {
         return get().heuristicFilterOptions[key];
       },
@@ -24,9 +23,8 @@ const useHeuristicFilterOptionsStore = create<HeuristicFilterOptionsStore>()(
         set({ heuristicFilterOptions: cur });
       },
       setOptions: (options: Partial<HeuristicFilterOptions>) => {
-        set({ ...get().heuristicFilterOptions, ...options });
+        set({ heuristicFilterOptions: {...get().heuristicFilterOptions, ...options} });
       },
-      getOptions: () => get().heuristicFilterOptions,
     }),
     { name: "heuristic-filter-options" }
   )
