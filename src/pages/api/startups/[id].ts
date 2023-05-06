@@ -8,11 +8,11 @@ export default function handler(
   const { id } = req.query;
 
   res.status(200).json({
-    categories: ["Healthcare", "Artificial Intelligence", "E-Commerce"],
+    category_list: "Healthcare|Artificial Intelligence|E-Commerce",
     description:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, quaerat autem dolores rem cum ut.",
     id: id?.toString() ?? "-1",
     name: "Unicorn🦄 Inc.",
-    imgUrl: "https://picsum.photos/200/300",
+    picture: "https://picsum.photos/200/300",
   });
 }

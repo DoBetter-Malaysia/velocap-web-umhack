@@ -47,8 +47,8 @@ const Listings = () => {
               id={item.id}
               key={item.id}
               name={item.name}
-              imgUrl={item.imgUrl}
-              categories={item.categories}
+              picture={item.picture}
+              category_list={item.category_list}
               description={item.description}
             />
           ))}

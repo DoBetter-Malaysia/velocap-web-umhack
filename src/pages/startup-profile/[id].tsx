@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { IconPinned, IconPinnedOff } from "@tabler/icons-react";
 import Link from "next/link";
+import { Startup } from "@/interfaces/Startup";
 
 export enum StartUpGrade {
   APlus,
@@ -92,7 +93,7 @@ const getStartUpGrade = (grade: StartUpGrade) => {
 const StartUpProfile = () => {
   const [loading, setLoading] = useState(false);
   const [isProfilePinned, setIsProfilePinned] = useState<boolean>(false);
-  const [startUpProfile, setStartUpProfile] = useState<StartUpCardProps>();
+  const [startUpProfile, setStartUpProfile] = useState<Startup>();
   const router = useRouter();
   const { id } = router.query;
 
@@ -100,7 +101,7 @@ const StartUpProfile = () => {
     if (!router.isReady) return;
 
     setLoading(true);
-    axios(`/api/startups/${id}`).then((res) => {
+    axios(`http://127.0.0.1:5000/startups/${id}`).then((res) => {
       setStartUpProfile(res.data);
       setLoading(false);
     });
@@ -131,7 +132,7 @@ const StartUpProfile = () => {
             <div className="h-auto w-auto">
               <img
                 className="h-[300px] w-full rounded object-cover"
-                src={startUpProfile?.imgUrl ?? "/logo.png"}
+                src={startUpProfile?.picture ?? "/logo.png"}
                 alt=""
               />
             </div>
@@ -152,7 +153,7 @@ const StartUpProfile = () => {
                 Categories
               </Text>
               <Group position="left" mt="md" mb="xs" spacing="xs">
-                {startUpProfile?.categories.map((cat) => (
+                {startUpProfile?.category_list.split("|").map((cat) => (
                   <Badge color="blue" variant="light">
                     {cat}
                   </Badge>
@@ -224,43 +225,29 @@ const StartUpProfile = () => {
                 <tr>
                   <th></th>
                   <th>Founder name</th>
-                  <th>Stake %</th>
-                  <th>Remarks</th>
+                  <th>Years of experience</th>
+                  <th>No. of previous startups</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>
-                    <img
-                      className="h-[25px] w-[25px] rounded-full"
-                      src="/hero.png"
-                      alt=""
-                    />
-                  </td>
-                  <td>
-                    <Link href="/founder-profile/0" className="text-blue-500">
-                      John Doe
-                    </Link>
-                  </td>
-                  <td>50%</td>
-                  <td>Has criminal record</td>
-                </tr>
-                <tr>
-                  <td>
-                    <img
-                      className="h-[25px] w-[25px] rounded-full"
-                      src="/depression.png"
-                      alt=""
-                    />
-                  </td>
-                  <td>
-                    <Link href="/founder-profile/1" className="text-blue-500">
-                      Jane Doe
-                    </Link>
-                  </td>
-                  <td>50%</td>
-                  <td>Has started up 20 successful startups in the past</td>
-                </tr>
+                {startUpProfile?.founders.map((f) => (
+                  <tr>
+                    <td>
+                      <img
+                        className="h-[25px] w-[25px] rounded-full"
+                        src={f.picture}
+                        alt=""
+                      />
+                    </td>
+                    <td>
+                      <a href={f.linkedin} className="text-blue-500">
+                        {f.name}
+                      </a>
+                    </td>
+                    <td>{f.years_of_experience}</td>
+                    <td>{f.prev_founded}</td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </div>

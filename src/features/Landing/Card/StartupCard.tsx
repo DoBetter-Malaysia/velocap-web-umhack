@@ -11,18 +11,19 @@ export enum StartUpStatus {
 export interface StartUpCardProps {
   id: string;
   name: string;
-  imgUrl?: string;
+  picture?: string;
   description: string;
-  categories: string[];
+  category_list: string;
 }
 
 const StartUpCard = ({
   id,
   name,
-  imgUrl,
+  picture: imgUrl,
   description,
-  categories,
+  category_list,
 }: StartUpCardProps) => {
+  const categories = category_list.split("|");
   return (
     <Card w={"28%"} shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>

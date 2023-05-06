@@ -7,7 +7,7 @@ export default function handler(
 ) {
   res.status(200).json(
     Array.from({ length: 9 }, (v, i) => ({
-      categories: ["Healthcare", "Artificial Intelligence", "E-Commerce"],
+      category_list: "Healthcare|Artificial Intelligence|E-Commerce",
       description:
         "Lorem ipsum dolor sit amet consectetur adipisicing elit. Debitis, quaerat autem dolores rem cum ut.",
       id: i.toString(),
