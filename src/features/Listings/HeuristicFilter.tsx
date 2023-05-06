@@ -153,7 +153,7 @@ const HeuristicFilter = ({ close }: HeuristicFilterProps) => {
         onSubmit={heuristicFilterForm.onSubmit(updateHeuristicFilters)}
         onReset={() => onFormCancel()}
       >
-        <div className="flex min-h-[16rem] flex-col gap-4">
+        <div className="flex min-h-[16rem] flex-col gap-2">
           <div>
             <Text fz="lg" fw="bold">
               Company Profile
@@ -195,8 +195,8 @@ const HeuristicFilter = ({ close }: HeuristicFilterProps) => {
             placeholder="Company status"
             label="Company status"
           />
-          <div>
-            <Text fz="lg" fw="bold">
+          <div className="space-y-2">
+            <Text fz="lg" fw="bold" className="mt-2">
               Finances
             </Text>
             <NumberInput
@@ -221,8 +221,8 @@ const HeuristicFilter = ({ close }: HeuristicFilterProps) => {
               }
             />
           </div>
-          <div>
-            <Text fz="lg" fw="bold">
+          <div className="space-y-2">
+            <Text fz="lg" fw="bold" className="mt-2">
               Founder Profile
             </Text>
             <NumberInput
