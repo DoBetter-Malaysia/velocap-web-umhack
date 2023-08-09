@@ -14,6 +14,9 @@
 
 VeloCap is our champion 🏆 project for UMHack 2023 Hackathon. It was featured in the [local news](https://www.thestar.com.my/news/education/2023/06/25/double-win-for-apu) too.
 
+
+This repository contains only the **frontend** portion of the codes, check out [velocap-core-umhack](https://github.com/DoBetter-Malaysia/velocap-core-umhack) for frontend codes.
+
 ## ⚡ Features
 
 - 🤖 AI-powered Market Analysis (Bing AI)
